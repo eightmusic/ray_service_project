@@ -11,7 +11,7 @@ logger = get_logger(__name__)
 
 def main() -> None:
     settings = get_settings()
-    configure_logging(settings.log_level)
+    configure_logging(settings.log_level, settings.log_file)
     if not ray.is_initialized():
         ray.init(namespace="ray-service", ignore_reinit_error=True)
     logger.info("Starting Ray Serve on %s:%s", settings.service_host, settings.service_port)

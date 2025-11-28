@@ -122,8 +122,9 @@
 | `SERVICE_HOST` / `SERVICE_PORT` | Ray Serve HTTP 监听地址 | `0.0.0.0` / `8000` |
 | `HEARTBEAT_INTERVAL_SECONDS` / `HEARTBEAT_TTL_SECONDS` | 心跳频率与 TTL | `10` / `30` |
 | `DEFAULT_MAX_CONCURRENCY` | 未指定模型并发时的默认值 | `4` |
-| `NANOBANANA_API_KEY` | NanoBanana 示例模型所需密钥 | 空 |
 | `LOG_LEVEL` | 日志等级 | `INFO` |
+| `LOG_FILE` | 日志文件路径（可选，不设置则只输出到控制台） | 空 |
+| `NANOBANANA_API_KEY` | NanoBanana 示例模型所需密钥 | 空 |
 
 > `Settings`（`config.py`）会自动读取 `.env` 或环境变量，`get_settings()` 在应用生命周期中复用同一个配置实例。
 
@@ -224,7 +225,15 @@ docker compose up（无 --build）：直接启动两个服务，使用已有镜�
 
 ## 日志与监控
 
-框架默认将日志输出到标准输出（`logging.basicConfig`），Compose / 进程管理器可统一采集。若需写入文件，可在 `logging_setup.configure_logging` 中添加自定义 Handler。
+框架默认将日志同时输出到标准输出和控制台。若需保存到文件，可在 `.env` 中设置 `LOG_FILE` 环境变量：
+
+```bash
+LOG_FILE=/var/log/ray_service/app.log
+```
+
+日志文件使用 `RotatingFileHandler`，单个文件最大 10MB，保留 5 个备份文件。日志格式统一为：`%(asctime)s | %(levelname)s | %(name)s | %(message)s`。
+
+### Redis 监控键
 
 - 心跳键：`ray_service:heartbeat:<worker_id>`，可用于探活。
 - 任务 Hash：`ray_service:task:<task_id>`，包含 payload、状态、结果，可由外部可视化工具订阅。

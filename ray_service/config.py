@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     heartbeat_ttl_seconds: int = Field(30, env="HEARTBEAT_TTL_SECONDS")
     default_max_concurrency: int = Field(4, env="DEFAULT_MAX_CONCURRENCY")
     log_level: str = Field("INFO", env="LOG_LEVEL")
+    log_file: Optional[str] = Field(None, env="LOG_FILE")
     nanobanana_api_key: str = Field("", env="NANOBANANA_API_KEY")
 
     class Config:

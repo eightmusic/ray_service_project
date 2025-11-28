@@ -23,7 +23,7 @@ from ray_service.models.external import ExternalAPIClient
 from ray_service.task_queue import TaskQueue
 
 settings = get_settings()
-configure_logging(settings.log_level)
+configure_logging(settings.log_level, settings.log_file)
 logger = get_logger(__name__)
 
 
